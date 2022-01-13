@@ -4,7 +4,7 @@ import { TODO_ACTIONS } from '../constants'
 import { TodoContext } from '../App'
 
 const TodoItem = ({ todo }) => {
-    const dispatch = useContext(TodoContext)
+    const { dispatch } = useContext(TodoContext)
     const handleChange = todo => {
         dispatch({
             type: todo.complete ? TODO_ACTIONS.UNDO : TODO_ACTIONS.DO,

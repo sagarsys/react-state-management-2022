@@ -28,13 +28,13 @@ const App = () => {
     })
     
     return (
-        <TodoContext.Provider value={dispatchTodos}>
             <Container maxWidth="lg">
                 <Filter dispatch={dispatchFilter} filter={filter} />
-                <TodoList todos={filteredTodos} />
-                <AddTodo />
+                <TodoContext.Provider value={{ dispatch: dispatchTodos, todos: filteredTodos }}>
+                    <TodoList />
+                    <AddTodo />
+                </TodoContext.Provider>
             </Container>
-        </TodoContext.Provider>
     )
 }
 

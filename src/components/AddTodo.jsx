@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid'
 import { TodoContext } from '../App'
 
 const AddTodo = () => {
-    const dispatch = useContext(TodoContext)
+    const { dispatch } = useContext(TodoContext)
     const [task, setTask] = useState('')
     
     const handleChange = event => {

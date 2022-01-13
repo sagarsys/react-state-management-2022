@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Checkbox, List, ListItem, Paper, Typography } from '@mui/material'
 import TodoItem from './TodoItem'
+import { TodoContext } from '../App'
 
-const TodoList = ({ todos }) => {
+const TodoList = () => {
+    const { todos } = useContext(TodoContext)
     return (
         <Paper elevation={3} sx={{ p: 4 }}>
             <Typography variant="h2" component="h1" gutterBottom>TODO List</Typography>
