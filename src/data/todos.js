@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid } from 'uuid'
 
 export default [
     {
@@ -16,4 +16,4 @@ export default [
         task: 'Learn State Management with React Hooks',
         complete: false,
     },
-];
+]
