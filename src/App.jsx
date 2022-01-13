@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import { v4 as uuid } from 'uuid'
 import initialTodos from './data/todos'
-import { filterTypes, filterValues } from './constants'
+import { filterTypes, filterValues, TODO_ACTIONS } from './constants'
 
 const filterReducer = (state, action) => {
     switch (action.type) {
@@ -28,9 +28,38 @@ const filterReducer = (state, action) => {
     }
 }
 
+const todoReducer = (state, action) => {
+    switch (action.type) {
+        case TODO_ACTIONS.DO:
+            return state.map(todo => {
+                if (todo.id === action.id) {
+                    return { ...todo, complete: true }
+                } else {
+                    return todo
+                }
+            })
+        case TODO_ACTIONS.UNDO:
+            return state.map(todo => {
+                if (todo.id === action.id) {
+                    return { ...todo, complete: false }
+                } else {
+                    return todo
+                }
+            })
+        case TODO_ACTIONS.ADD:
+            return state.concat({
+                task: action.task,
+                id: action.id,
+                complete: false,
+            })
+        default:
+            throw new Error()
+    }
+}
+
 const App = () => {
+    const [todos, dispatchTodos] = useReducer(todoReducer, initialTodos);
     const [filter, dispatchFilter] = useReducer(filterReducer, filterValues.ALL)
-    const [todos, setTodos] = useState(initialTodos)
     const [task, setTask] = useState('')
     
     const filteredTodos = todos.filter(todo => {
@@ -46,16 +75,11 @@ const App = () => {
         return false
     })
     
-    const handleCheckboxChange = id => {
-        setTodos(
-            todos.map(todo => {
-                if (todo.id === id) {
-                    return { ...todo, complete: !todo.complete }
-                } else {
-                    return todo
-                }
-            })
-        )
+    const handleCheckboxChange = todo => {
+        dispatchTodos({
+            type: todo.complete ? TODO_ACTIONS.UNDO : TODO_ACTIONS.DO,
+            id: todo.id,
+        })
     }
     
     const handleInputChange = event => {
@@ -76,32 +100,37 @@ const App = () => {
     
     const handleSubmit = event => {
         if (task) {
-            setTodos(todos.concat({ id: uuid(), task, complete: false }))
+            dispatchTodos({ type: TODO_ACTIONS.ADD, id: uuid(), task })
         }
         setTask('')
         event.preventDefault()
+    }
+    
+    const getFilterButtonColor = (type) => {
+        return (filter === type) ? 'secondary' : 'info'
     }
     
     return (
         <Container maxWidth="lg">
             <Box sx={{ p: 2 }}>
                 <ButtonGroup variant="text" color="info">
-                    <Button onClick={handleShowAll}>{filterValues.ALL}</Button>
-                    <Button onClick={handleShowComplete}>{filterValues.COMPLETE}</Button>
-                    <Button onClick={handleShowIncomplete}>{filterValues.INCOMPLETE}</Button>
+                    <Button color={getFilterButtonColor(filterValues.ALL)} onClick={handleShowAll}>{filterValues.ALL}</Button>
+                    <Button color={getFilterButtonColor(filterValues.COMPLETE)} onClick={handleShowComplete}>{filterValues.COMPLETE}</Button>
+                    <Button color={getFilterButtonColor(filterValues.INCOMPLETE)} onClick={handleShowIncomplete}>{filterValues.INCOMPLETE}</Button>
                 </ButtonGroup>
             </Box>
             
             <Paper elevation={3} sx={{ p: 4 }}>
                 <Typography variant="h2" component="h1" gutterBottom>TODO List</Typography>
                 <List>
+                    {!filteredTodos.length && <ListItem>No items</ListItem>}
                     {filteredTodos.map(todo => (
                         <ListItem disablePadding key={todo.id}>
                             <label>
                                 <Checkbox
                                     color="success"
                                     checked={todo.complete}
-                                    onChange={() => handleCheckboxChange(todo.id)}
+                                    onChange={() => handleCheckboxChange(todo)}
                                 />
                                 {todo.task}
                             </label>
