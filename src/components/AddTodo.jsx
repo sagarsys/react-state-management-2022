@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Box, Button, TextField } from '@mui/material'
 import { TODO_ACTIONS } from '../constants'
 import { v4 as uuid } from 'uuid'
+import { TodoContext } from '../App'
 
-const AddTodo = ({ dispatch }) => {
+const AddTodo = () => {
+    const dispatch = useContext(TodoContext)
     const [task, setTask] = useState('')
     
     const handleChange = event => {

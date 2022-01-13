@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { createContext, useReducer } from 'react'
 import { Container } from '@mui/material'
 import initialTodos from './data/todos'
 import { filterTypes, filterValues, TODO_ACTIONS } from './constants'
@@ -7,6 +7,8 @@ import todoReducer from './reducers/todoReducer'
 import Filter from './components/Filter'
 import TodoList from './components/TodoList'
 import AddTodo from './components/AddTodo'
+
+export const TodoContext = createContext(null)
 
 const App = () => {
     const [todos, dispatchTodos] = useReducer(todoReducer, initialTodos);
@@ -26,11 +28,13 @@ const App = () => {
     })
     
     return (
-        <Container maxWidth="lg">
-            <Filter dispatch={dispatchFilter} filter={filter} />
-            <TodoList dispatch={dispatchTodos} todos={filteredTodos} />
-            <AddTodo dispatch={dispatchTodos} />
-        </Container>
+        <TodoContext.Provider value={dispatchTodos}>
+            <Container maxWidth="lg">
+                <Filter dispatch={dispatchFilter} filter={filter} />
+                <TodoList todos={filteredTodos} />
+                <AddTodo />
+            </Container>
+        </TodoContext.Provider>
     )
 }
 
