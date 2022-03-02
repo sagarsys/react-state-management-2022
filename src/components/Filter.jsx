@@ -1,19 +1,22 @@
 import React from 'react'
 import { Box, Button, ButtonGroup } from '@mui/material'
 import { filterTypes, filterValues } from '../constants'
+import { useDispatch, useSelector } from 'react-redux'
+import { getFilter, showFilter } from '../reducers/filterReducer'
 
-const Filter = ({ dispatch, filter }) => {
+const Filter = ({ filter }) => {
+    const dispatch = useDispatch();
     
     const handleShowAll = () => {
-        dispatch({ type: filterTypes.SHOW_ALL })
+        dispatch(showFilter(filterValues.ALL))
     }
     
     const handleShowComplete = () => {
-        dispatch({ type: filterTypes.SHOW_COMPLETE })
+        dispatch(showFilter(filterValues.COMPLETE))
     }
     
     const handleShowIncomplete = () => {
-        dispatch({ type: filterTypes.SHOW_INCOMPLETE })
+        dispatch(showFilter(filterValues.INCOMPLETE))
     }
     
     const getFilterButtonColor = (type) => {

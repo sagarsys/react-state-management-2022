@@ -1,32 +1,36 @@
 import { TODO_ACTIONS } from '../constants'
+import initialTodos from '../data/todos'
+import { createSlice } from '@reduxjs/toolkit'
 
-const todoReducer = (state, action) => {
-    switch (action.type) {
-        case TODO_ACTIONS.DO:
-            return state.map(todo => {
-                if (todo.id === action.id) {
-                    return { ...todo, complete: true }
-                } else {
-                    return todo
+export const TodoSlice = createSlice({
+    name: 'todo',
+    initialState: {
+        todos: initialTodos,
+    },
+    reducers: {
+        doTodo(state, action) {
+            state.todos.forEach(todo => {
+                if (todo.id === action.payload.id) {
+                    todo.complete = true
                 }
             })
-        case TODO_ACTIONS.UNDO:
-            return state.map(todo => {
-                if (todo.id === action.id) {
-                    return { ...todo, complete: false }
-                } else {
-                    return todo
+        },
+        undo(state, action) {
+            state.todos.forEach(todo => {
+                if (todo.id === action.payload.id) {
+                    todo.complete = false
                 }
             })
-        case TODO_ACTIONS.ADD:
-            return state.concat({
-                task: action.task,
-                id: action.id,
-                complete: false,
-            })
-        default:
-            throw new Error()
+        },
+        add(state, action) {
+            const { task, id } = action.payload;
+            state.todos.push({ task, id, complete: false, })
+        },
     }
-}
+})
 
-export default todoReducer
+export const { doTodo, undo, add } = TodoSlice.actions
+
+export default TodoSlice.reducer
+
+export const getTodos = (state) => state?.todo?.todos || [];

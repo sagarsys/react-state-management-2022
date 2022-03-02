@@ -2,17 +2,17 @@ import React, { createContext, useReducer } from 'react'
 import { Container } from '@mui/material'
 import initialTodos from './data/todos'
 import { filterTypes, filterValues, TODO_ACTIONS } from './constants'
-import filterReducer from './reducers/filterReducer'
-import todoReducer from './reducers/todoReducer'
+import filterReducer, { getFilter } from './reducers/filterReducer'
+import todoReducer, { getTodos } from './reducers/todoReducer'
 import Filter from './components/Filter'
 import TodoList from './components/TodoList'
 import AddTodo from './components/AddTodo'
+import { useDispatch, useSelector } from 'react-redux'
 
-export const TodoContext = createContext(null)
 
 const App = () => {
-    const [todos, dispatchTodos] = useReducer(todoReducer, initialTodos);
-    const [filter, dispatchFilter] = useReducer(filterReducer, filterValues.ALL)
+    const todos = useSelector(getTodos)
+    const filter = useSelector(getFilter);
     
     const filteredTodos = todos.filter(todo => {
         if (filter === filterValues.ALL) {
@@ -29,11 +29,9 @@ const App = () => {
     
     return (
             <Container maxWidth="lg">
-                <Filter dispatch={dispatchFilter} filter={filter} />
-                <TodoContext.Provider value={{ dispatch: dispatchTodos, todos: filteredTodos }}>
-                    <TodoList />
-                    <AddTodo />
-                </TodoContext.Provider>
+                <Filter filter={filter} />
+                <TodoList todos={filteredTodos} />
+                <AddTodo />
             </Container>
     )
 }

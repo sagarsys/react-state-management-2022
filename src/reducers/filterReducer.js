@@ -1,16 +1,19 @@
 import { filterTypes, filterValues } from '../constants'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 
-const filterReducer = (state, action) => {
-    switch (action.type) {
-        case filterTypes.SHOW_ALL:
-            return filterValues.ALL
-        case filterTypes.SHOW_COMPLETE:
-            return filterValues.COMPLETE
-        case filterTypes.SHOW_INCOMPLETE:
-            return filterValues.INCOMPLETE
-        default:
-            throw new Error()
+const filterSlice = createSlice({
+    name: 'filter',
+    initialState: {
+        filter: filterValues.ALL
+    },
+    reducers: {
+        showFilter(state, action) {
+            state.filter = action.payload;
+        }
     }
-}
+})
 
-export default filterReducer
+export const { showFilter } = filterSlice.actions
+export default filterSlice.reducer
+
+export const getFilter = (state) => state?.filter?.filter || filterValues.ALL;
